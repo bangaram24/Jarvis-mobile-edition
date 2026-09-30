@@ -23,6 +23,8 @@ function saveMemory(text) {
     'jarvis_memory',
     JSON.stringify(memory)
   );
+
+  console.log("MEMORY SAVED:", memory);
 }
 
 function getMemory() {
