@@ -1,1 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: #00eaff;
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+}
+
+header {
+  padding: 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+header p {
+  margin-top: 5px;
+  font-size: 12px;
+  letter-spacing: 4px;
+}
+
+.core {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 30px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  position: absolute;
+  border: 2px solid #00eaff;
+  border-radius: 50%;
+  animation: spin 5s linear infinite;
+}
+
+.ring1 {
+  width: 210px;
+  height: 210px;
+}
+
+.ring2 {
+  width: 170px;
+  height: 170px;
+  animation-duration: 3s;
+  animation-direction: reverse;
+}
+
+.ring3 {
+  width: 130px;
+  height: 130px;
+  animation-duration: 2s;
+}
+
+.center {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #001a1f;
+  box-shadow: 0 0 30px #00eaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-text {
+  font-size: 10px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status {
+  margin: 20px auto;
+  font-size: 12px;
+}
+
+.status p {
+  margin: 6px;
+}
+
+#chat {
+  width: 90%;
+  max-width: 600px;
+  height: 250px;
+  margin: 20px auto;
+  padding: 15px;
+  border: 1px solid #00eaff;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.msg {
+  margin: 10px 0;
+}
+
+.user {
+  color: white;
+}
+
+.ai {
+  color: #00eaff;
+}
+
+.input-box {
+  display: flex;
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+  gap: 8px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  background: #000;
+  color: #00eaff;
+  border: 1px solid #00eaff;
+}
+
+button {
+  padding: 12px 18px;
+  background: #00eaff;
+  color: #000;
+  border: none;
+}
