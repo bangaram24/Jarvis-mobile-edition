@@ -12,7 +12,7 @@ document.getElementById('send').onclick = () => {
 
   setTimeout(() => {
     chat.lastChild.innerText =
-      'J.A.R.V.I.S: Systems online. How may I assist you, Boss?';
+      'J.A.R.V.I.S: Systems online. How may I assist you, Bangaram?';
   }, 1000);
 };
 
