@@ -10,6 +10,24 @@ const MODELS = ["gemini-3.6-flash", "gemini-flash-latest"];
 const chat = document.getElementById('chat');
 const input = document.getElementById('msg');
 const micBtn = document.getElementById('mic-btn');
+// 🧠 J.A.R.V.I.S MEMORY
+
+let memory = JSON.parse(
+  localStorage.getItem('jarvis_memory') || '[]'
+);
+
+function saveMemory(text) {
+  memory.push(text);
+
+  localStorage.setItem(
+    'jarvis_memory',
+    JSON.stringify(memory)
+  );
+}
+
+function getMemory() {
+  return memory.join('\n');
+}
 
 async function callGemini(promptText) {
   let lastErr;
@@ -163,3 +181,12 @@ function add(text, who) {
 
   chat.scrollTop = chat.scrollHeight;
 }
+// 🧠 CLEAR MEMORY
+
+document.getElementById('clear-memory').onclick = () => {
+  memory = [];
+
+  localStorage.removeItem('jarvis_memory');
+
+  add('J.A.R.V.I.S: Memory cleared.', 'ai');
+};
