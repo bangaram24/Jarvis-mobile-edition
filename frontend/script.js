@@ -204,3 +204,99 @@ document.getElementById('clear-memory').onclick = () => {
 
   add('J.A.R.V.I.S: Memory cleared.', 'ai');
 };
+// ===== TOOLS (THE HANDS) =====
+
+async function handleTools(text) {
+  const t = text.toLowerCase();
+
+  // 1. Time
+  if (/\btime\b/.test(t) || t.includes('సమయం')) {
+    return 'The time is ' + new Date().toLocaleTimeString() + ', Boss.';
+  }
+
+  // 2. Weather
+  if (t.includes('weather') || t.includes('వాతావరణం')) {
+    return await new Promise(resolve => {
+      navigator.geolocation.getCurrentPosition(async position => {
+        try {
+          const r = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&current_weather=true`
+          );
+
+          const d = await r.json();
+
+          resolve(
+            `It is ${d.current_weather.temperature} degrees Celsius now, Boss.`
+          );
+        } catch (e) {
+          resolve('Weather service error, Boss.');
+        }
+      }, () => {
+        resolve('I need location permission for weather, Boss.');
+      });
+    });
+  }
+
+  // 3. Timer
+  const match = t.match(
+    /(\d+)\s*(seconds?|secs?|minutes?|mins?|hours?|hrs?)/i
+  );
+
+  if ((t.includes('timer') || t.includes('టైమర్')) && match) {
+    const amount = parseInt(match[1]);
+    const unit = match[2].toLowerCase();
+
+    const factor =
+      /^(hours?|hrs?|h)/.test(unit)
+        ? 3600000
+        : /^(seconds?|secs?|s)/.test(unit)
+        ? 1000
+        : 60000;
+
+    const duration = amount * factor;
+
+    setTimeout(() => {
+      speak(`Timer complete! ${amount} ${unit} finished.`);
+    }, duration);
+
+    return `Timer set for ${amount} ${unit}.`;
+  }
+
+  // 4. Translate
+  if (t.includes('translate')) {
+    const q =
+      text.replace(/translate (this )?/i, '').trim() || 'hello';
+
+    try {
+      const r = await fetch(
+        'https://api.mymemory.translated.net/get?q=' +
+        encodeURIComponent(q) +
+        '&langpair=en|te'
+      );
+
+      const d = await r.json();
+
+      return 'In Telugu: ' + d.responseData.translatedText;
+    } catch (e) {
+      return 'Translate error, Boss.';
+    }
+  }
+
+  // 5. YouTube Play
+  if (t.includes('play ') || t.includes('youtube ')) {
+    const q = text
+      .replace(/play |youtube (search )?/i, '')
+      .trim();
+
+    if (q) {
+      window.open(
+        'https://www.youtube.com/results?search_query=' +
+        encodeURIComponent(q)
+      );
+
+      return 'Searching YouTube for ' + q + ', Boss.';
+    }
+  }
+
+  return null;
+}
