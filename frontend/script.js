@@ -82,11 +82,23 @@ async function askGemini(promptText) {
   add('J.A.R.V.I.S: Thinking...', 'ai');
 
   try {
-    const reply = await callGemini(promptText);
+    const memoryText = getMemory();
 
-    chat.lastChild.innerText = 'J.A.R.V.I.S: ' + reply;
+    const fullPrompt =
+      "You are J.A.R.V.I.S. Use the following memory when relevant:\n" +
+      memoryText +
+      "\n\nUser: " +
+      promptText;
+
+    const reply = await callGemini(fullPrompt);
+
+    chat.lastChild.innerText =
+      'J.A.R.V.I.S: ' + reply;
 
     speak(reply);
+
+    saveMemory("User: " + promptText);
+    saveMemory("J.A.R.V.I.S: " + reply);
 
   } catch (e) {
     chat.lastChild.innerText =
