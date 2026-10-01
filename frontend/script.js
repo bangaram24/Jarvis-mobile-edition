@@ -1,65 +1,28 @@
-let API_KEY = localStorage.getItem('jarvis_key');
-if(!API_KEY){
-API_KEY = prompt('Enter your Gemini API Key:');
-if(API_KEY) localStorage.setItem('jarvis_key', API_KEY);
-}
-// ===== 2. SMART MODELS (ఒకటిfail అయితేnext auto try) =====
-const MODELS = ["gemini-3.6-flash", "gemini-flash-latest"];
-const chat=document.getElementById('chat');
-const input=document.getElementById('msg');
-const micBtn=document.getElementById('mic-btn');
-// ===== 3. GEMINI BRAIN (auto-fallback) =====
-async function callGemini(p){ let lastErr;
-for(const m of MODELS){
-try{
-const res=await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent?key="
-+API_KEY,
-{method:"POST",headers:{"Content-Type":"application/json"},
-body:JSON.stringify({contents:[{parts:[{text:p}]}]})});
-const data=await res.json();
-if(data.error){
-lastErr=new Error(data.error.message);
-if(/high demand|temporar|quota|rate|unavailable|no longer
-available|deprecated/i.test(data.error.message)) continue;
-throw lastErr;
-}
-return data.candidates[0].content.parts[0].text;
-}catch(e){ lastErr=e; }
-}
-throw lastErr;
-}
-async function askGemini(p){
-add('J.A.R.V.I.S: Thinking...','ai');
-try{
-const reply=await callGemini(p);
-chat.lastChild.innerText='J.A.R.V.I.S: '+reply;
-speak(reply); // reply వచ్చి న వెంటనేVOICE
-}catch(e){
-chat.lastChild.innerText='J.A.R.V.I.S: ERROR - '+e.message;
-}
-}
-// ===== 4. SPEECH RECOGNITION (వినడం) =====
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const rec=new SR(); rec.lang='en-US'; // Telugu కి'te-IN'
-rec.onresult=(e)=>{const t=e.results[0][0].transcript;add('YOU: '+t,'user');askGemini(t);};
-micBtn.onclick=()=>{rec.start();micBtn.innerText='LISTENING...';};
-rec.onend=()=>{micBtn.innerText='🎙️';};
-// ===== 5. TEXT-TO-SPEECH (మాట్లాడటం) =====
-let voices=[];
-function loadVoices(){ voices=speechSynthesis.getVoices(); }
-loadVoices();
-speechSynthesis.onvoiceschanged=loadVoices;
-function speak(t){
-const u=new SpeechSynthesisUtterance(t); u.rate=1.05; u.pitch=0.85;
-const v=voices.find(v=>v.lang.startsWith('en'));
-if(v) u.voice=v;
-speechSynthesis.speak(u);
-}
-// ===== 6. TEXT SEND BUTTON =====
-document.getElementById('send').onclick=()=>{
-const t=input.value.trim(); if(!t)return;
-add('YOU: '+t,'user'); input.value=''; askGemini(t);
-};
-function add(t,w){const d=document.createElement('div');d.className='msg
-'+w;d.innerText=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+@import url('https://fonts.googleapis.com/css2?
+family=Orbitron:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron'}
+body{background:#000;color:#0ff;padding:20px}
+header{text-align:center}
+header h1{letter-spacing:6px;text-shadow:0 0 12px #0ff}
+header p{font-size:10px;letter-spacing:4px;opacity:.6}
+.core{position:relative;width:160px;height:160px;margin:25px auto}
+.ring{position:absolute;border:2px solid #0ff;border-radius:50%;box-shadow:0 0 15px #0ff}
+.r1{inset:0;border-top-color:transparent;animation:spin 3s linear infinite}
+.r2{inset:20px;border-bottom-color:transparent;animation:spin 2s linear infinite reverse}
+.center{position:absolute;inset:50px;background:#0ff;border-radius:50%;box-shadow:0 0 
+30px #0ff;animation:pulse 1.5s infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.4}}
+.core-text{text-align:center;font-size:11px;letter-spacing:3px}
+.status{border:1px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);padding:
+12px;margin:20px 0}
+.status h2{font-size:12px;letter-spacing:2px;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;font-size:11px;margin:6px 0}
+.on{color:#0f0}.off{color:#f00}
+.chat{border:1px solid rgba(0,255,255,.3);height:150px;overflow-y:auto;padding:10px;font-
+size:12px}
+.msg{margin:6px 0;padding:6px;border-left:2px solid #0ff;background:rgba(0,255,255,.08)}
+.msg.user{border-left-color:#fff}
+.input-area{display:flex;gap:8px;margin-top:12px}
+input{flex:1;background:#000;border:1px solid #0ff;color:#0ff;padding:10px}
+button{background:#0ff;color:#000;border:none;padding:10px 16px;font-weight:bold}
